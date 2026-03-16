@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rabbana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Mirza:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>رَبَّنَا (Our Lord!)</h1>
+        <button id="info-btn">i</button>
+    </header>
+
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" style="float:right; cursor:pointer;">&times;</span>
+            <h2 style="color:var(--arabic-color)">About Rabbana</h2>
+            <p>This collection of duas was compilied by the Imams of ADAMS Center as part of the Ramadan 2026 Fajr khatirah series. Every morning a dua was covered and each recording can be found at the ADAMS YouTube page under the playlist titled “Duas of the Quran - Ramadan 2026".</p>
+
+            <p>Our Lord accept this from us, make the Quran our constant companion and enter us into Your paradise.</p>
+        </div>
+    </div>
+
+    <div class="slider-wrapper">
+        <button class="nav-btn" id="prev-btn">&#10094;</button>
+        <div class="dua-container" id="dua-container">
+            </div>
+        <button class="nav-btn" id="next-btn">&#10095;</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById("dua-container");
+            const modal = document.getElementById("info-modal");
+            
+            // Modal Toggles
+            document.getElementById("info-btn").onclick = () => modal.style.display = "block";
+            document.getElementById("close-modal").onclick = () => modal.style.display = "none";
+
+            fetch('duas.json')
+                .then(res => res.json())
+                .then(data => {
+                    container.innerHTML = "";
+                    data.forEach(dua => {
+                        const card = document.createElement("div");
+                        card.className = "dua-card";
+                        card.innerHTML = `
+                            <div class="dua-content">
+                                <div class="arabic-text">${dua.arabic_dua}</div>
+                                <div class="english-text">${dua.translation}</div>
+                                <div class="ayah-ref">${dua.ayah}</div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                });
+
+            // Nav Logic
+            document.getElementById("next-btn").onclick = () => container.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+            document.getElementById("prev-btn").onclick = () => container.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "ArrowRight") document.getElementById("next-btn").click();
+                if (e.key === "ArrowLeft") document.getElementById("prev-btn").click();
+            });
+        });
+    </script>
+</body>
+</html>
