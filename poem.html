@@ -24,42 +24,45 @@
 
         /* Header Styling */
         header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            text-align: center;
-            padding: 40px 0;
-            z-index: 100;
-            background: linear-gradient(to bottom, var(--bg-color) 60%, transparent);
-        }
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    padding: 25px 0; /* Reduced from 40px to save mobile space */
+    z-index: 100;
+    /* Made the gradient slightly more solid so scrolling text hides better */
+    background: linear-gradient(to bottom, var(--bg-color) 70%, transparent);
+}
 
-        h1 {
-            font-family: 'Mirza', serif;
-            color: var(--gold-color);
-            margin: 0;
-            font-size: clamp(1.6rem, 5vw, 2.2rem);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+h1 {
+    font-family: 'Mirza', serif;
+    color: var(--gold-color);
+    margin: 0;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.3;
+    padding: 0 70px; /* IMPORTANT: Keeps text away from the info button */
+}
 
         /* Info Button - Positioned Top Right */
         #info-btn {
-            position: absolute;
-            right: 30px;
-            top: 45px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1.5px solid var(--gold-color);
-            background: transparent;
-            color: var(--gold-color);
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-        }
+    position: absolute;
+    right: 20px; /* Moved slightly closer to the edge */
+    top: 25px;   /* Adjusted to align with the new header padding */
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold-color);
+    background: transparent;
+    color: var(--gold-color);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
 
         #info-btn:hover {
             background: var(--gold-color);
@@ -86,29 +89,32 @@
 
         /* SCROLL CONTAINER */
         .poem-wrapper {
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scrollbar-width: none;
-            padding-top: 10vh;
-            padding-bottom: 20vh; /* Added extra padding so the last stanza centers nicely */
-        }
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    padding-top: 15vh;
+    /* This extra padding allows the very last verse to reach the center */
+    padding-bottom: 60vh; 
+    box-sizing: border-box;
+}
 
         .poem-wrapper::-webkit-scrollbar { display: none; }
 
         .stanza {
-            height: 50vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            scroll-snap-align: center;
-            padding: 0 15vw;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            opacity: 0.15;
-            transform: scale(0.9);
-        }
+    min-height: 40vh; /* Removes the rigid 50vh limit */
+    padding: 15vh 12vw; /* Vertical padding creates the gap instead of height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    scroll-snap-align: center;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    opacity: 0.15;
+    transform: scale(0.9);
+    box-sizing: border-box; /* Crucial: keeps padding inside the box */
+}
 
         .stanza.active {
             opacity: 1;
@@ -116,10 +122,10 @@
         }
 
         .stanza p {
-            font-size: clamp(1.2rem, 3.5vh, 1.8rem);
-            line-height: 1.8;
-            margin: 0;
-        }
+    font-size: clamp(1.2rem, 3vh, 1.7rem); /* Reduced the vh scale slightly */
+    line-height: 1.6;
+    margin: 0;
+}
 
         .highlight {
             color: var(--gold-color);
@@ -195,21 +201,23 @@
         }
 
         .footer-decoration {
-            position: fixed;
-            bottom: 15px;
-            width: 100%;
-            text-align: center;
-            color: var(--gold-color);
-            opacity: 0.3;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-        }
+    position: fixed;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    color: var(--gold-color);
+    opacity: 0.5;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    z-index: 30; /* Higher than the vignettes */
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
 
     <header>
-        <h2><span class="highlight">Rabbana</span> - Bless our ADAMS Community</h2>
+        <h1><span style="color: var(--gold-color);">Rabbana</span> <span style="color: var(--text-color); text-transform: none;">- Bless our ADAMS Community</span></h1>
         <button id="info-btn">i</button>
     </header>
 
@@ -276,7 +284,7 @@
         </div>
 
         <div class="stanza">
-            <p>There is no God except You! As was said in the belly of the Whale,<br>Glorified are You - Above anything the world entails.</p>
+            <p><span class="highlight">There is no God except You!</span> As was said in the belly of the Whale,<br>Glorified are You - Above anything the world entails.</p>
         </div>
 
         <div class="stanza">
@@ -296,15 +304,19 @@
         </div>
 
         <div class="stanza">
-            <p>Do not let our hearts waiver, once you have given us a taste of Faith.<br>Remove from hearts any ill-feelings, fill our lives with Love, not Hate.</p>
+            <p><span class="highlight">Do not let our hearts waiver</span>, once you have given us a taste of Faith.<br>Remove from hearts any ill-feelings, fill our lives with Love, not Hate.</p>
         </div>
 
         <div class="stanza">
-            <p><span class="highlight">Rabbi</span>, Inspire us to be gracious, and always full of praise and thanks.<br>You have blessed us, and the ADAMS community, we ask You, Please ya Rabb, to raise us our ranks.</p>
+            <p><span class="highlight">Rabbi</span>, Inspire us to be gracious, and always full of praise and thanks.<br>You have blessed us, and the ADAMS community, we ask You, Please ya Rabb, to raise us in our ranks.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Ameen</span></p>
         </div>
     </div>
 
-    <div class="footer-decoration">✧ RAMADAN 2026 ✧</div>
+    <div class="footer-decoration">ADAMS RAMADAN 2026 Duas</div>
 
     <script>
         const observerOptions = {
