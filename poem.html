@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rabbana - ADAMS Community Poem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alice&family=Mirza:wght@400;700&swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #132e47;
+            --gold-color: #bd8641;
+            --text-color: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Alice', serif;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Header Styling */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            text-align: center;
+            padding: 40px 0;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--bg-color) 60%, transparent);
+        }
+
+        h1 {
+            font-family: 'Mirza', serif;
+            color: var(--gold-color);
+            margin: 0;
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Info Button - Positioned Top Right */
+        #info-btn {
+            position: absolute;
+            right: 30px;
+            top: 45px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--gold-color);
+            background: transparent;
+            color: var(--gold-color);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        #info-btn:hover {
+            background: var(--gold-color);
+            color: var(--bg-color);
+        }
+
+        /* VIGNETTE OVERLAYS */
+        .vignette {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 30vh;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .vignette-top {
+            top: 0;
+            background: linear-gradient(to bottom, var(--bg-color) 30%, transparent);
+        }
+        .vignette-bottom {
+            bottom: 0;
+            background: linear-gradient(to top, var(--bg-color) 30%, transparent);
+        }
+
+        /* SCROLL CONTAINER */
+        .poem-wrapper {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            padding-top: 10vh;
+            padding-bottom: 20vh; /* Added extra padding so the last stanza centers nicely */
+        }
+
+        .poem-wrapper::-webkit-scrollbar { display: none; }
+
+        .stanza {
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            scroll-snap-align: center;
+            padding: 0 15vw;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0.15;
+            transform: scale(0.9);
+        }
+
+        .stanza.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .stanza p {
+            font-size: clamp(1.2rem, 3.5vh, 1.8rem);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .highlight {
+            color: var(--gold-color);
+            font-family: 'Mirza', serif;
+            font-size: 1.2em;
+        }
+
+        /* MODAL STYLING */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(10, 25, 40, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background-color: var(--bg-color);
+            margin: 15vh auto;
+            padding: 40px;
+            border: 1px solid var(--gold-color);
+            width: 80%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .modal-content h2 {
+            color: var(--gold-color);
+            font-family: 'Mirza', serif;
+            font-size: 2.2rem;
+            margin-top: 0;
+        }
+
+        .modal-content p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-content a {
+            color: var(--gold-color);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--gold-color);
+            cursor: pointer;
+        }
+
+        /* INDICATORS */
+        .scroll-hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--gold-color);
+            z-index: 20;
+            font-size: 1.8rem;
+            animation: bounce 2s infinite;
+            transition: opacity 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+        }
+
+        .footer-decoration {
+            position: fixed;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            color: var(--gold-color);
+            opacity: 0.3;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2><span class="highlight">Rabbana</span> - Bless our ADAMS Community</h2>
+        <button id="info-btn">i</button>
+    </header>
+
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal">&times;</span>
+            <h2>About This Poem</h2>
+            <p>This poem are the duas from the ADAMS Ramadan 2026 fajr khatirah series as found on <a href="/">rabbanaduas.com</a> versified by Ustadh Shad Imam. Our Lord! Accept from him and his family!</p>
+            
+        </div>
+    </div>
+
+    <div class="vignette vignette-top"></div>
+    <div class="vignette vignette-bottom"></div>
+    <div class="scroll-hint" id="scroll-hint">↓</div>
+
+    <div class="poem-wrapper" id="poem-wrapper">
+        <div class="stanza">
+            <p>Oh Allah guide us upon the Straight Path,<br>the Path of who carry the day, not of those who have gone astray.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> accept from us our deeds, every night of every year,<br>for You are the One who Knows all, and You are the One who hears.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Grant us goodness in this World and the Next,<br>Protect us from the Fire, Make us of those who are Blessed.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Shower us with perseverance, make firm for us our steps,<br>Grant us victory over the disbelievers, from the Generosity that You give.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Don’t let our hearts waiver, once faith has taken hold,<br>Grant us from Your Mercy, Forgive our sins, new and old.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Perfect for us our Lights, Forgive our sins and excesses,<br>Grant us Offspring that are righteous, make them people who are blessed.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> You did not create us without purpose, we see Your Signs in all creation.<br>Glorified are you always, in every time, space and station.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Provide for us our Rizq, You are the Best of those that provide,<br>We have wronged ourselves immensely, From You we cannot Hide.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Judge between us in Truth, You are the Best of those who Judge,<br>Allow us a blessed landing, Deliver us by Your Mercy from Above.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> make us and our children of those who pray,<br>And accept from us our worship, Guide us along the way.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> Have mercy on our parents, they took care of us when we were young,<br>Grant them the best of endings, with the Shahadah on their tongues.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbi</span> Grant me an entrance of honor, and an exit just the same,<br>Grant me Support from none other than You, so that I begin in Your Name.</p>
+        </div>
+
+        <div class="stanza">
+            <p>There is no God except You! As was said in the belly of the Whale,<br>Glorified are You - Above anything the world entails.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbi</span> expand for me my chest, make easy for me my task,<br>Untie the knots from my tongue, make the disbelievers understand my asks.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbi</span>, increase us in knowledge, make us of those guided aright,<br>We submit to Your Will, ya Allah, we ask You for Your Light.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> bless us with spouse, children and family, that will be the comfort of our souls,<br>And make us leaders of all righteousness, and Grant us the courage to be bold.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbana</span> do not place upon us a burden that we cannot bear,<br>Pardon us and forgive us, in You we put our Trust and Care.</p>
+        </div>
+
+        <div class="stanza">
+            <p>Do not let our hearts waiver, once you have given us a taste of Faith.<br>Remove from hearts any ill-feelings, fill our lives with Love, not Hate.</p>
+        </div>
+
+        <div class="stanza">
+            <p><span class="highlight">Rabbi</span>, Inspire us to be gracious, and always full of praise and thanks.<br>You have blessed us, and the ADAMS community, we ask You, Please ya Rabb, to raise us our ranks.</p>
+        </div>
+    </div>
+
+    <div class="footer-decoration">✧ RAMADAN 2026 ✧</div>
+
+    <script>
+        const observerOptions = {
+            root: document.getElementById('poem-wrapper'),
+            threshold: 0.6
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+                else entry.target.classList.remove('active');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stanza').forEach(stanza => observer.observe(stanza));
+
+        // Modal Logic
+        const modal = document.getElementById("info-modal");
+        document.getElementById("info-btn").onclick = () => modal.style.display = "block";
+        document.getElementById("close-modal").onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+        // Scroll Hint Logic
+        const wrapper = document.getElementById('poem-wrapper');
+        const hint = document.getElementById('scroll-hint');
+        wrapper.onscroll = () => { 
+            hint.style.opacity = wrapper.scrollTop > 50 ? "0" : "1"; 
+        };
+    </script>
+</body>
+</html>
