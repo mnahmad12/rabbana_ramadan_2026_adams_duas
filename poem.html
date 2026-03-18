@@ -96,19 +96,19 @@
         .poem-wrapper::-webkit-scrollbar { display: none; }
 
         .stanza {
-            min-height: 35vh;
-            padding: 12vh 12vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            scroll-snap-align: center;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            opacity: 0.3; /* Base visibility so they aren't totally hidden */
-            transform: scale(0.95);
-            box-sizing: border-box;
-        }
+    min-height: 45vh; /* Increased from 35vh to give larger text more room */
+    padding: 15vh 10vw; /* Balanced vertical padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    scroll-snap-align: center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0.3;
+    transform: scale(0.95);
+    box-sizing: border-box;
+}
 
         .stanza.active {
             opacity: 1;
@@ -116,10 +116,12 @@
         }
 
         .stanza p {
-            font-size: clamp(1.1rem, 2.8vh, 1.7rem);
-            line-height: 1.7;
-            margin: 0;
-        }
+    /* FONT SIZE: Increased base from 1.1rem to 1.4rem */
+    font-size: clamp(1.4rem, 3.5vh, 2.2rem); 
+    line-height: 1.7;
+    margin: 0;
+    max-width: 900px; /* Keeps lines from stretching too wide on desktop */
+}
 
         .highlight {
             color: var(--gold-color);
@@ -254,9 +256,11 @@
         <div class="stanza"><p>Do not let our hearts waiver, once you have given us a taste of Faith.<br>Remove from hearts any ill-feelings, fill our lives with Love, not Hate.</p></div>
 
         <div class="stanza"><p><span class="highlight">Rabbi</span>, Inspire us to be gracious, and always full of praise and thanks.<br>You have blessed us, and the ADAMS community, we ask You, Please ya Rabb, to raise us our ranks.</p></div>
+
+        <div class="stanza"><p><span class="highlight">Ameen</span></p></div>
     </div>
 
-    <div class="footer-decoration">✧ RAMADAN 2026 ✧</div>
+    <div class="footer-decoration">ADAMS RAMADAN 2026 Dua Series Versified</div>
 
     <script>
         // Use a low threshold (0.2) so stanzas activate easily on mobile
